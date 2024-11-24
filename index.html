@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WCA Ranking Percentage Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>WCA Ranking Calculator</h1>
+            <div class="input-group">
+                <input type="text" id="wcaId" placeholder="Enter WCA ID (e.g., 2013KOZE01)">
+                <button id="calculateBtn">Calculate</button>
+            </div>
+            <div id="results"></div>
+        </div>
+    </div>
+    <div class="card" id="chartContainer" style="display: none;">
+        <canvas id="rankChart"></canvas>
+    </div>
+    <div class="footer">
+        A product by <span>The Cubing Company</span>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
