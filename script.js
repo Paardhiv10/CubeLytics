@@ -2,18 +2,22 @@ class WCARankingApp {
     constructor() {
         this.config = {
             totalCompetitors: {
-                "333": 237229, "222": 192221, "444": 155981,
-                "555": 98133, "pyram": 194444, "skewb": 167555,
-                "sq1": 141133, "oh": 116642, "clock": 23429,
-                "minx": 317239, "fm": 13910
+                "333": 237229, "222": 156105, "444": 75061,
+                "555": 36868, "pyram": 107879, "skewb": 61274,
+                "sq1": 22018, "333oh": 64270, "clock": 23461,
+                "minx": 31745, "333bf": 17171, "333fm": 13926, "666": 15368, "777": 12810,
+                "333mbf": 5795, "444bf": 2976, "555bf": 1785
+
             },
             eventNames: {
                 "333": "3x3x3 Cube", "222": "2x2x2 Cube",
                 "444": "4x4x4 Cube", "555": "5x5x5 Cube",
                 "pyram": "Pyraminx", "skewb": "Skewb",
-                "sq1": "Square-1", "oh": "3x3x3 One-Handed",
-                "clock": "Clock", "minx": "Megaminx",
-                "fm": "Fewest Moves"
+                "sq1": "Square-1", "333oh": "3x3x3 One-Handed",
+                "clock": "Clock", "minx": "Megaminx", "333bf": "3x3x3 Blindfolded",
+                "333fm": "3x3x3 Fewest Moves", "666": "6x6x6 Cube", "777": "7x7x7 Cube",
+                "333mbf": "3x3x3 Multi Blind", "444bf": "4x4x4 Blindfolded", "555bf": "5x5x5 Blindfolded" 
+
             }
         };
         this.chart = null;
