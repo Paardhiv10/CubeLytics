@@ -1,29 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WCA Ranking Percentage Calculator</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WCA Ranking Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h1>WCA Ranking Calculator</h1>
-            <div class="input-group">
-                <input type="text" id="wcaId" placeholder="Enter WCA ID (e.g., 2013KOZE01)">
-                <button id="calculateBtn">Calculate</button>
-            </div>
-            <div id="results"></div>
-        </div>
+  <header class="header">
+    <img src="tcc_logo.png" alt="The Cubing Company Logo" class="logo">
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h1>WCA Ranking Calculator</h1>
+      <div class="input-group">
+        <input type="text" id="wcaId" placeholder="Enter WCA ID" />
+        <button id="calculateBtn">Calculate Rankings</button>
+      </div>
     </div>
-    <div class="card" id="chartContainer" style="display: none;">
-        <canvas id="rankChart"></canvas>
+
+    <div class="card-grid">
+      <div class="card wide-card">
+        <h2>Ranking and Percentages</h2>
+        <div id="results"></div>
+      </div>
+      <div class="card wide-card">
+        <h2>Asia Ranking</h2>
+        <div id="asia-results"></div>
+      </div>
     </div>
+
+    <div class="chart-card card">
+      <canvas id="rankChart"></canvas>
+    </div>
+
     <div class="footer">
-        A product by <span>The Cubing Company</span>
+      A product by <span>The Cubing Company</span>
     </div>
-    <script src="script.js"></script>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

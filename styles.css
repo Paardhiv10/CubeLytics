@@ -2,9 +2,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-body {
+  }
+  
+  body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
@@ -14,52 +14,76 @@ body {
     flex-direction: column;
     align-items: center;
     position: relative;
-}
+  }
 
-.container {
+  /* Logo at the Top Left */
+  .header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: #FFF6F0; /* Match background color */
+  }
+  
+  .logo {
+    width: 150px; /* Adjust size */
+    height: auto;
+  }
+  
+  
+  .container {
     width: 90%;
     max-width: 900px;
     padding: 2rem;
-}
-
-.card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .card {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 2.5rem;
     border: 2px solid #ff6600;
     width: 100%;
-}
-
-h1 {
+  }
+  
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  h1, h2 {
     color: #ff6600;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
     text-align: center;
     font-weight: 600;
-}
-
-.input-group {
+  }
+  
+  h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+  h2 { font-size: 1.4rem; margin-bottom: 1rem; }
+  
+  .input-group {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
-}
-
-input {
+  }
+  
+  input {
     flex: 1;
     padding: 0.75rem 1rem;
     border: 2px solid #ff660033;
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s ease;
-}
-
-input:focus {
+  }
+  
+  input:focus {
     outline: none;
     border-color: #ff6600;
-}
-
-button {
+  }
+  
+  button {
     background-color: #ff6600;
     color: white;
     border: none;
@@ -68,56 +92,56 @@ button {
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;
-}
-
-button:hover {
+  }
+  
+  button:hover {
     background-color: #ff8533;
-}
-
-.results-grid {
+  }
+  
+  .results-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
     margin-top: 1.5rem;
-}
-
-.result-item {
+  }
+  
+  .result-item {
     background-color: #FFF9F5;
     padding: 1.25rem;
     border-radius: 8px;
     border: 1px solid rgba(255, 102, 0, 0.15);
     transition: background-color 0.2s ease;
-}
-
-.result-item:hover {
+  }
+  
+  .result-item:hover {
     background-color: #FFF2E6;
-}
-
-.event-name {
+  }
+  
+  .event-name {
     color: #333;
     font-weight: 600;
     margin-bottom: 0.5rem;
-}
-
-.rank-info {
+  }
+  
+  .rank-info {
     color: #666;
     font-size: 0.9rem;
-}
-
-.percentage {
+  }
+  
+  .percentage {
     color: #ff6600;
     font-weight: 700;
     font-size: 1.1rem;
     margin-top: 0.25rem;
-}
-
-.loading {
+  }
+  
+  .loading {
     text-align: center;
     padding: 2rem;
     color: #666;
-}
-
-.loading-spinner {
+  }
+  
+  .loading-spinner {
     border: 3px solid #ff660033;
     border-top: 3px solid #ff6600;
     border-radius: 50%;
@@ -125,72 +149,58 @@ button:hover {
     height: 24px;
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
-}
-
-.error {
+  }
+  
+  .error {
     color: #ff3300;
     text-align: center;
     padding: 1rem;
-}
-
-#chartContainer {
-    margin: 2rem auto;
-    padding: 1.5rem;
-    background-color: #FFF9F5;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border: 2px solid rgba(255, 102, 0, 0.2);
-    text-align: center;
-    width: 90%;
-    max-width: 900px;
-    position: relative;
-}
-
-#rankChart {
+  }
+  
+  .chart-card {
+    margin-top: 1.5rem;
+  }
+  
+  #rankChart {
     width: 100% !important;
     height: 400px !important;
     display: block;
     position: relative;
-}
-
-.footer {
+  }
+  
+  .footer {
     text-align: center;
     padding: 1rem;
     color: #666;
     font-size: 0.9rem;
     margin-top: 2rem;
     width: 100%;
-}
-
-.footer span {
+  }
+  
+  .footer span {
     color: #ff6600;
     font-weight: 600;
-}
-
-@keyframes spin {
+  }
+  
+  @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-@media (max-width: 768px) {
-    .results-grid {
-        grid-template-columns: 1fr;
+  }
+  
+  @media (max-width: 768px) {
+    .card-grid {
+      grid-template-columns: 1fr;
     }
-    
+  
     .input-group {
-        flex-direction: column;
+      flex-direction: column;
     }
-    
+  
     .container {
-        padding: 1rem;
+      padding: 1rem;
     }
-
+  
     .card {
-        padding: 1.5rem;
+      padding: 1.5rem;
     }
-    
-    #chartContainer {
-        width: 90%;
-        padding: 1rem;
-    }
-}
+  }
