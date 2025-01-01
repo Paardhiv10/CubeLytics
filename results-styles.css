@@ -1,0 +1,416 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #ff6600;
+    --primary-light: #ff8533;
+    --background-gradient-start: #FFF9F5;
+    --background-gradient-end: #FFFFFF;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, var(--background-gradient-start), var(--background-gradient-end));
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Styles */
+.header {
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    width: 140px;
+    height: auto;
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    font-size: 1rem;
+}
+
+nav a:hover {
+    color: var(--primary-color);
+}
+
+/* Header Buttons Styles */
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pricing-button, .pdf-download-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pricing-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: 2px solid var(--primary-color);
+}
+
+.pricing-button:hover {
+    background-color: var(--primary-light);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-download-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: 2px solid #4CAF50;
+}
+
+.pdf-download-btn:hover {
+    background-color: #45a049;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Info Icon Styles */
+.info-icon-container {
+    position: relative;
+}
+
+.info-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.info-icon:hover {
+    background-color: var(--primary-light);
+}
+
+.info-card {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background-color: white;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    width: 300px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.info-icon-container:hover .info-card {
+    display: block;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 8rem 0 4rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+/* Input Card Styles */
+.input-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.input-card h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    display: flex;
+    gap: 1rem;
+}
+
+input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid rgba(255, 102, 0, 0.2);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--primary-light);
+}
+
+/* Results Section */
+.results-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    border: 2px solid var(--primary-color);
+}
+
+.ranking-card h2 {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Result Grid Styles */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+.result-item {
+    background-color: var(--background-gradient-start);
+    padding: 1.25rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 102, 0, 0.15);
+    transition: background-color 0.2s ease;
+}
+
+.result-item:hover {
+    background-color: #FFF2E6;
+}
+
+.event-name {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.rank-info {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.percentage {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 0.25rem;
+}
+
+/* Chart Styles */
+.chart-card {
+    margin-top: 1.5rem;
+}
+
+#rankChart, #averagesChart {
+    width: 100%;
+    height: 400px;
+    display: block;
+}
+
+/* CTA Section */
+.cta-section {
+    text-align: center;
+    margin: 4rem auto;
+    padding: 3rem 2rem;
+    background-color: var(--background-gradient-start);
+    border-radius: 12px;
+    max-width: 800px;
+}
+
+.cta-section h2 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--primary-light);
+}
+
+/* Footer Styles */
+.footer {
+    text-align: center;
+    padding: 2rem;
+    background-color: #333;
+    color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .logo {
+        margin-bottom: 1rem;
+    }
+
+    nav {
+        margin-bottom: 1rem;
+    }
+
+    .header-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hero {
+        padding: 6rem 1rem 3rem;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    .results-section {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 5rem 1rem 2rem;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero p {
+        font-size: 0.9rem;
+    }
+
+    .input-card {
+        padding: 1.5rem;
+    }
+
+    .cta-section {
+        padding: 2rem 1rem;
+    }
+
+    .info-card {
+        width: 250px;
+        font-size: 0.8rem;
+    }
+}
+

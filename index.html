@@ -1,112 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WCA Ranking Calculator</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cubing Company - Speedcubing Analytics</title>
+    <link rel="stylesheet" href="css/home-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.auth0.com/js/auth0/9.28.0/auth0.min.js"></script>
 </head>
-
 <body>
-  <header class="header">
-    <div class="header-content">
-      <img src="tcc_logo.png" alt="The Cubing Company Logo" class="logo">
-      <nav>
-        <a href="#features">Features</a>
-        <a href="#calculator">Calculator</a>
-        <a href="#about">About</a>
-      </nav>
-      <div class="header-buttons">
-        <a href="pricing.html" class="pricing-button" title="Pricing">Pro Plan</a>
-        <div class="info-icon-container">
-          <div class="info-icon" title="Info">i</div>
-          <div class="info-card">
-            <p>The data used for calculations is current up to 25-11-2024.</p>
-          </div>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html">
+                <img src="images/tcc_logo.png" alt="The Cubing Company Logo" class="logo">
+            </a> 
+            <nav class="main-nav">
+                <a href="#features">Features</a>
+                <a href="pages/results.html">Rankings</a>
+                <a href="#about">About</a>
+            </nav>
+            <div class="header-buttons">
+                <!-- <a href="#" id="loginButton" class="login-button">Login with WCA</a> -->
+                <a href="pages/pricing.html" class="pricing-button">Pro Plan</a>
+            </div>
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <main class="container">
-    <section class="hero">
-      <h1>WCA Ranking Calculator</h1>
-      <p>Discover your standing in the world of competitive cubing</p>
-      <div class="card input-card">
-        <h2>Calculate Your Rankings</h2>
-        <div class="input-group">
-          <input type="text" id="wcaId" placeholder="Enter your WCA ID" />
-          <button id="calculateBtn">Calculate Rankings</button>
-        </div>
-      </div>
-    </section>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Elevate Your Speedcubing Journey</h1>
+                    <p>Unlock advanced analytics, track your progress, and benchmark your performance</p>
+                    <div class="hero-buttons">
+                        <a href="pages/results.html" class="hero-cta">Explore Rankings</a>
+                        <a href="pages/pricing.html" class="hero-secondary">View Pro Features</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="images/displayImage.png" alt="Speedcubing Illustration">
+                </div>
+            </div>
+        </section>
 
-    <section id="features" class="features">
-      <div class="feature">
-        <i class="fas fa-globe"></i>
-        <h3>Global Rankings</h3>
-        <p>Compare your times with cubers worldwide</p>
-      </div>
-      <div class="feature">
-        <i class="fas fa-chart-line"></i>
-        <h3>Detailed Analytics</h3>
-        <p>Get insights on your performance across events</p>
-      </div>
-      <div class="feature">
-        <i class="fas fa-trophy"></i>
-        <h3>Personal Progress</h3>
-        <p>Track your improvement over time</p>
-      </div>
-    </section>
+        <section class="features" id="features">
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Global Performance Tracking</h3>
+                    <p>Compare your skills with cubers worldwide and understand your global standing</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Comprehensive Analytics</h3>
+                    <p>Dive deep into your performance with detailed insights and trend analysis</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>Personal Progress Monitoring</h3>
+                    <p>Track your improvement, set goals, and visualize your cubing evolution</p>
+                </div>
+            </div>
+        </section>
 
-    <section id="calculator" class="results-section">
-      <div class="card-grid">
-        <div class="card wide-card ranking-card">
-          <h2>Ranking and Percentages</h2>
-          <div id="results"></div>
-        </div>
-        <div class="card wide-card ranking-card">
-          <h2>Continent Ranking</h2>
-          <div id="asia-results"></div>
-        </div>
-      </div>
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Unlock Your Potential?</h2>
+                <p>Join thousands of speedcubers who are leveling up their game</p>
+                <div class="cta-buttons">
+                    <a href="pages/results.html" class="cta-primary">Check Rankings</a>
+                    <a href="pages/pricing.html" class="cta-secondary">View Pro Features</a>
+                </div>
+            </div>
+        </section>
+    </main>
 
-      <div class="card-grid">
-        <div class="card wide-card ranking-card">
-          <h2>World Averages Ranking</h2>
-          <div id="world-averages-results"></div>
-        </div>
-        <div class="card wide-card ranking-card">
-          <h2>Continent Averages Ranking</h2>
-          <div id="continent-averages-results"></div>
-        </div>
-      </div>
-
-      <div class="chart-card card">
-        <canvas id="rankChart"></canvas>
-      </div>
-    </section>
-
-    <section id="about" class="about-section">
-      <h2>About WCA Ranking Calculator</h2>
-      <p>Our calculator provides cubers with accurate and up-to-date rankings based on official World Cube Association data. Whether you're a beginner or an experienced speedcuber, our tool helps you track your progress and compare your performance globally.</p>
-    </section>
-
-    <div class="cta-section">
-      <h2>Ready to dive deeper?</h2>
-      <a href="pricing.html" class="cta-button">Explore Pro Features</a>
-    </div>
-  </main>
-
-  <footer class="footer">
-    <p>A product by <span>The Cubing Company</span></p>
-  </footer>
-
-  <script src="script.js"></script>
+    <footer class="footer">
+        <p>© 2024 The Cubing Company. All Rights Reserved.</p>
+    </footer>
+    
+    <script src="js/menu.js"></script>
 </body>
-
 </html>
-

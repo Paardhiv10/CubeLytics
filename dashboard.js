@@ -115,187 +115,171 @@ class WCARankingApp {
             }
         };
         this.chart = null;
-        this.averagesChart = null; // Added to handle averages chart
-        this.selectedContinent = 'AS'; // Default to Asia
+        this.averagesChart = null;
+        this.selectedContinent = 'AS';
+        this.chartColors = {
+            worldRank: '#ff6600',
+            continentRank: '#4CAF50',
+            worldPercentage: '#ffa500',
+            continentPercentage: '#2196F3'
+        };
+        this.contributionColors = ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'];
         this.init();
     }
 
     init() {
-        // Initially hide all cards except the first one
-        const allCards = document.querySelectorAll('.card');
-        const chartCard = document.querySelector('.chart-card');
-        allCards.forEach((card, index) => {
-            if (index !== 0) {
-                card.style.display = 'none';
-            }
-        });
-        chartCard.style.display = 'none';
+        this.initSidebar();
+        this.initEventListeners();
+        this.showSection('all');
+    }
     
-        // Add event listener for the "Search" button
-        document.getElementById('calculateBtn').addEventListener('click', () => {
-            this.handleSearch();
+    initSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            this.adjustMainContentMargin();
         });
-    
-        // Add event listener for the "Enter" key
+
+        // Close sidebar when clicking on a link (for mobile)
+        const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('href').substring(1);
+                this.showSection(sectionId);
+                this.setActiveLink(link);
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.add('collapsed');
+                }
+            });
+        });
+    }
+
+    initEventListeners() {
+        document.getElementById('calculateBtn').addEventListener('click', () => this.handleSearch());
         document.getElementById('wcaId').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.handleSearch();
             }
         });
-        // Add event listener for the PDF download button
         document.getElementById('downloadPdfBtn').addEventListener('click', () => this.generatePDF());
+    }
+
+    adjustMainContentMargin() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('.main-content');
+        mainContent.style.marginLeft = sidebar.classList.contains('collapsed') ? '60px' : '250px';
+    }
+
+    setActiveLink(clickedLink) {
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.classList.remove('active');
+        });
+        clickedLink.classList.add('active');
+    }
+
+    showSection(sectionId) {
+        const sections = ['graphs', 'rankings', 'performance-history'];
+        if (sectionId === 'all') {
+            sections.forEach(section => {
+                document.getElementById(section).style.display = 'block';
+            });
+        } else {
+            sections.forEach(section => {
+                document.getElementById(section).style.display = section === sectionId ? 'block' : 'none';
+            });
+        }
     }
     
     handleSearch() {
         const wcaId = document.getElementById('wcaId').value.trim();
         if (wcaId) {
             this.calculateRankings(wcaId);
-            // Make other cards visible after search
-            const allCards = document.querySelectorAll('.card');
-            allCards.forEach((card, index) => {
-                if (index !== 0) {
-                    card.style.display = 'block';
-                }
-            });
-            const chartCard = document.querySelector('.chart-card');
-            chartCard.style.display = 'block';
+            this.showSection('all');
+            document.querySelector('.sidebar-nav a[href="#all"]').classList.add('active');
         }
     }
     
     displayResults(data) {
+        // Display competitor info in separate card
+        const competitorInfoDiv = document.getElementById('competitor-info');
+        competitorInfoDiv.innerHTML = `
+            <p>Name: ${data.person.name}</p>
+            <p>Country: ${data.person.country.name}</p>
+            <p>Continent: ${this.config.continents[this.selectedContinent]}</p>
+        `;
+    
+        // Update global rankings title
+        document.getElementById('global-single-title').textContent = 'World Rankings Single';
+    
+        // Display results
         const resultsDiv = document.getElementById('results');
-        const rankData = [...data.rank.singles, ...data.rank.averages];
+        const personalRecords = data.personal_records;
         
         const results = Object.keys(this.config.totalCompetitors)
             .map(eventId => {
-                const event = rankData.find(e => e.eventId === eventId);
-                if (!event || !event.rank || !event.rank.world) {
+                const event = personalRecords[eventId];
+                if (!event || !event.single || !event.single.world_rank) {
                     return this.createResultItem(eventId, null, 'world');
                 }
-                return this.createResultItem(eventId, event.rank.world, 'world');
+                return this.createResultItem(eventId, event.single.world_rank, 'world');
             });
     
-        resultsDiv.innerHTML = `
-            <div class="competitor-info">
-                <h3>Competitor Details</h3>
-                <p>Name: ${data.name}</p>
-                <p>Country: ${data.country}</p>
-                <p>Continent: ${this.config.continents[this.selectedContinent]}</p>
-            </div>
-            <div class="results-grid">${results.join('')}</div>
-        `;
+        resultsDiv.innerHTML = `<div class="results-grid">${results.join('')}</div>`;
     }
     
     displayContinentResults(data) {
+        // Update continental rankings title
+        document.getElementById('continental-single-title').textContent = 
+            `${this.config.continents[this.selectedContinent]} Rankings Single`;
+    
         const continentResultsDiv = document.getElementById('asia-results');
-        const rankData = [...data.rank.singles, ...data.rank.averages];
+        const personalRecords = data.personal_records;
         
         const continentResults = Object.keys(this.config.continentCompetitors[this.selectedContinent])
             .map(eventId => {
-                const event = rankData.find(e => e.eventId === eventId);
-                if (!event || !event.rank || !event.rank.continent) {
+                const event = personalRecords[eventId];
+                if (!event || !event.single || !event.single.continent_rank) {
                     return this.createResultItem(eventId, null, 'continent');
                 }
-                return this.createResultItem(eventId, event.rank.continent, 'continent');
+                return this.createResultItem(eventId, event.single.continent_rank, 'continent');
             });
     
-        continentResultsDiv.innerHTML = `
-            <h3>${this.config.continents[this.selectedContinent]} Specific Rankings</h3>
-            <div class="results-grid">${continentResults.join('')}</div>
-        `;
-    }
-
-    async calculateRankings(wcaId) {
-        const resultsDiv = document.getElementById('results');
-        const continentResultsDiv = document.getElementById('asia-results');
-        const worldAveragesDiv = document.getElementById('world-averages-results');
-        const continentAveragesDiv = document.getElementById('continent-averages-results');
-        const resultsCard = document.querySelector('.card:first-of-type');
-        const continentResultsCard = document.querySelector('.card:nth-of-type(2)');
-        const chartContainer = document.querySelector('.chart-card');
-        
-        // Loading state for all divs
-        const loadingHTML = `
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                Fetching data...
-            </div>`;
-        
-        resultsDiv.innerHTML = loadingHTML;
-        continentResultsDiv.innerHTML = loadingHTML;
-        worldAveragesDiv.innerHTML = loadingHTML;
-        continentAveragesDiv.innerHTML = loadingHTML;
-        
-        resultsCard.style.display = 'block';
-        continentResultsCard.style.display = 'block';
-        chartContainer.style.display = 'none';
-    
-        try {
-            // Fetch person details
-            const personResponse = await fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/persons/${wcaId}.json`);
-            if (!personResponse.ok) throw new Error('WCA ID not found. Please check and try again.');
-            
-            const personData = await personResponse.json();
-            
-            // Determine continent based on country
-            const country = personData.country;
-            const continent = this.getContinentForCountry(country);
-            
-            if (!continent) {
-                throw new Error(`Continent not found for country code: ${country}`);
-            }
-    
-            // Store the detected continent
-            this.selectedContinent = continent;
-    
-            // Display competitor details and singles rankings
-            this.displayResults(personData);
-            this.displayContinentResults(personData);
-    
-            // Display world and continent averages rankings
-            this.displayAveragesResults(personData, 'world');
-            this.displayAveragesResults(personData, 'continent');
-    
-            // Create charts based on singles and averages data
-            const singlesChartData = this.getChartData([...personData.rank.singles], this.selectedContinent);
-            const averagesChartData = this.getChartData([...personData.rank.averages], this.selectedContinent);
-            this.displayChart(singlesChartData);
-            this.displayAveragesChart(averagesChartData);
-    
-        } catch (error) {
-            const errorHTML = `<div class="error">${error.message}</div>`;
-            resultsDiv.innerHTML = errorHTML;
-            continentResultsDiv.innerHTML = errorHTML;
-            worldAveragesDiv.innerHTML = errorHTML;
-            continentAveragesDiv.innerHTML = errorHTML;
-        }
+        continentResultsDiv.innerHTML = `<div class="results-grid">${continentResults.join('')}</div>`;
     }
     
     displayAveragesResults(data, type) {
+        // Update averages rankings titles
+        if (type === 'world') {
+            document.getElementById('world-average-title').textContent = 'World Rankings Average';
+        } else {
+            document.getElementById('continental-average-title').textContent = 
+                `${this.config.continents[this.selectedContinent]} Rankings Average`;
+        }
+    
         const div = type === 'world' 
             ? document.getElementById('world-averages-results') 
             : document.getElementById('continent-averages-results');
         
-        const rankData = data.rank.averages;
+        const personalRecords = data.personal_records;
         
         const averagesResults = Object.keys(this.config.totalCompetitors)
             .map(eventId => {
-                const event = rankData.find(e => e.eventId === eventId);
-                if (!event || !event.rank || !event.rank[type === 'world' ? 'world' : 'continent']) {
+                const event = personalRecords[eventId];
+                if (!event || !event.average || !event.average[type === 'world' ? 'world_rank' : 'continent_rank']) {
                     return this.createResultItem(eventId, null, type, 'average');
                 }
                 return this.createResultItem(
                     eventId, 
-                    event.rank[type === 'world' ? 'world' : 'continent'], 
+                    event.average[type === 'world' ? 'world_rank' : 'continent_rank'], 
                     type, 
                     'average'
                 );
             });
     
-        div.innerHTML = `
-            <h3>${type === 'world' ? 'World' : this.config.continents[this.selectedContinent]} Averages Rankings</h3>
-            <div class="results-grid">${averagesResults.join('')}</div>
-        `;
+        div.innerHTML = `<div class="results-grid">${averagesResults.join('')}</div>`;
     }
     
     createResultItem(eventId, rank, type, rankType = 'single') {
@@ -303,7 +287,7 @@ class WCARankingApp {
         const totalCompetitors = type === 'world' 
             ? this.config.totalCompetitors[eventId] 
             : this.config.continentCompetitors[this.selectedContinent][eventId];
-    
+
         if (!rank) {
             return `
                 <div class="result-item">
@@ -312,34 +296,31 @@ class WCARankingApp {
                 </div>
             `;
         }
-    
-        const rankLocation = type === 'world' ? 'World' : `${this.config.continents[this.selectedContinent]}`;
-        const rankDescription = rankType === 'single' ? 'Single' : 'Average';
-        
+
         // Special handling for rank 1
         if (rank === 1) {
             const recordType = type === 'world' 
-                ? `World ${rankDescription} Record Holder!` 
-                : `${this.config.continents[this.selectedContinent]} ${rankDescription} Record Holder!`;
+                ? `World ${rankType} Record Holder!` 
+                : `${this.config.continents[this.selectedContinent]} ${rankType} Record Holder!`;
             
             return `
                 <div class="result-item">
                     <div class="event-name">${eventName}</div>
                     <div class="rank-info">
-                        ${rankLocation} ${rankDescription} Rank: 1
+                        Rank: 1
                         <div class="percentage">${recordType}</div>
                     </div>
                 </div>
             `;
         }
-    
+
         const percentage = ((rank / totalCompetitors) * 100).toFixed(2);
         
         return `
             <div class="result-item">
                 <div class="event-name">${eventName}</div>
                 <div class="rank-info">
-                    ${rankLocation} ${rankDescription} Rank: ${rank.toLocaleString()}
+                    Rank: ${rank.toLocaleString()}
                     <div class="percentage">Top ${percentage}%</div>
                 </div>
             </div>
@@ -350,7 +331,7 @@ class WCARankingApp {
         return this.config.countryToContinentMap[countryCode] || null;
     }
     
-    getChartData(rankData, continent) {
+    getChartData(personalRecords, continent, type = 'single') {
         const labels = [];
         const worldRankings = [];
         const continentRankings = [];
@@ -358,28 +339,21 @@ class WCARankingApp {
         const continentPercentages = [];
     
         Object.keys(this.config.totalCompetitors).forEach(eventId => {
-            // Find single and average rankings for the event
-            const singleEvent = rankData.find(e => 
-                e.eventId === eventId && 
-                e.rank && 
-                e.rank.world !== undefined && 
-                e.rank.continent !== undefined
-            );
-            
-            if (singleEvent) {
+            const event = personalRecords[eventId];
+            if (event && event[type] && event[type].world_rank && event[type].continent_rank) {
                 const totalCompetitors = this.config.totalCompetitors[eventId];
                 const continentCompetitors = this.config.continentCompetitors[continent][eventId];
     
                 labels.push(this.config.eventNames[eventId]);
-                worldRankings.push(singleEvent.rank.world);
-                continentRankings.push(singleEvent.rank.continent);
+                worldRankings.push(event[type].world_rank);
+                continentRankings.push(event[type].continent_rank);
                 
                 // Special handling for rank 1 in chart percentages
                 worldPercentages.push(
-                    singleEvent.rank.world === 1 ? 1 : ((singleEvent.rank.world / totalCompetitors) * 100).toFixed(2)
+                    event[type].world_rank === 1 ? 1 : ((event[type].world_rank / totalCompetitors) * 100).toFixed(2)
                 );
                 continentPercentages.push(
-                    singleEvent.rank.continent === 1 ? 1 : ((singleEvent.rank.continent / continentCompetitors) * 100).toFixed(2)
+                    event[type].continent_rank === 1 ? 1 : ((event[type].continent_rank / continentCompetitors) * 100).toFixed(2)
                 );
             }
         });
@@ -394,21 +368,7 @@ class WCARankingApp {
         };
     }
     
-    // Debugging method to log chart data
-    logChartData(data) {
-        console.log('Chart Data:', {
-            labels: data.labels,
-            worldRankings: data.worldRankings,
-            continentRankings: data.continentRankings,
-            worldPercentages: data.worldPercentages,
-            continentPercentages: data.continentPercentages
-        });
-    }
-    
     displayChart({ labels, worldRankings, continentRankings, worldPercentages, continentPercentages, continentName }) {
-        // Add debugging log
-        this.logChartData({ labels, worldRankings, continentRankings, worldPercentages, continentPercentages, continentName });
-    
         const chartContainer = document.querySelector('.chart-card');
         chartContainer.style.display = 'block';
     
@@ -430,24 +390,24 @@ class WCARankingApp {
                     {
                         label: 'World Rank',
                         data: worldRankings,
-                        backgroundColor: '#FF6600CC',
-                        borderColor: '#FF6600',
+                        backgroundColor: this.chartColors.worldRank + 'CC',
+                        borderColor: this.chartColors.worldRank,
                         borderWidth: 1,
                         order: 2
                     },
                     {
                         label: `${continentName} Rank`,
                         data: continentRankings,
-                        backgroundColor: '#4CAF50CC',
-                        borderColor: '#4CAF50',
+                        backgroundColor: this.chartColors.continentRank + 'CC',
+                        borderColor: this.chartColors.continentRank,
                         borderWidth: 1,
                         order: 3
                     },
                     {
                         label: 'World Top %',
                         data: worldPercentages,
-                        backgroundColor: '#FFA50099',
-                        borderColor: '#FFA500',
+                        backgroundColor: this.chartColors.worldPercentage + '99',
+                        borderColor: this.chartColors.worldPercentage,
                         borderWidth: 1,
                         type: 'line',
                         order: 1,
@@ -456,8 +416,8 @@ class WCARankingApp {
                     {
                         label: `${continentName} Top %`,
                         data: continentPercentages,
-                        backgroundColor: '#2196F3CC',
-                        borderColor: '#2196F3',
+                        backgroundColor: this.chartColors.continentPercentage + 'CC',
+                        borderColor: this.chartColors.continentPercentage,
                         borderWidth: 1,
                         type: 'line',
                         order: 4,
@@ -524,24 +484,24 @@ class WCARankingApp {
                     {
                         label: 'World Averages Rank',
                         data: worldRankings,
-                        backgroundColor: '#FF6600CC',
-                        borderColor: '#FF6600',
+                        backgroundColor: this.chartColors.worldRank + 'CC',
+                        borderColor: this.chartColors.worldRank,
                         borderWidth: 1,
                         order: 2
                     },
                     {
                         label: `${continentName} Averages Rank`,
                         data: continentRankings,
-                        backgroundColor: '#4CAF50CC',
-                        borderColor: '#4CAF50',
+                        backgroundColor: this.chartColors.continentRank + 'CC',
+                        borderColor: this.chartColors.continentRank,
                         borderWidth: 1,
                         order: 3
                     },
                     {
                         label: 'World Averages Top %',
                         data: worldPercentages,
-                        backgroundColor: '#FFA50099',
-                        borderColor: '#FFA500',
+                        backgroundColor: this.chartColors.worldPercentage + '99',
+                        borderColor: this.chartColors.worldPercentage,
                         borderWidth: 1,
                         type: 'line',
                         order: 1,
@@ -550,8 +510,8 @@ class WCARankingApp {
                     {
                         label: `${continentName} Averages Top %`,
                         data: continentPercentages,
-                        backgroundColor: '#2196F3CC',
-                        borderColor: '#2196F3',
+                        backgroundColor: this.chartColors.continentPercentage + 'CC',
+                        borderColor: this.chartColors.continentPercentage,
                         borderWidth: 1,
                         type: 'line',
                         order: 4,
@@ -596,6 +556,164 @@ class WCARankingApp {
         });
     }
 
+    displayPerformanceHistory(data) {
+        const graphContainer = document.getElementById('contributionGraph');
+        const performanceSection = document.getElementById('performance-history');
+        performanceSection.innerHTML = '';
+
+        // Create year dropdown
+        const yearDropdown = document.createElement('select');
+        yearDropdown.id = 'yearDropdown';
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 2003; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearDropdown.appendChild(option);
+        }
+        performanceSection.appendChild(yearDropdown);
+
+        // Create performance card
+        const performanceCard = document.createElement('div');
+        performanceCard.className = 'card performance-card';
+        performanceCard.appendChild(graphContainer);
+        performanceSection.appendChild(performanceCard);
+
+        const updateGraph = (selectedYear) => {
+            graphContainer.innerHTML = '';
+
+            const startDate = new Date(selectedYear, 0, 1);
+            const endDate = new Date(selectedYear, 11, 31);
+
+            const competitionsByDate = data.reduce((acc, comp) => {
+                const date = new Date(comp.start_date);
+                if (date >= startDate && date <= endDate) {
+                    const dateString = date.toISOString().split('T')[0];
+                    acc[dateString] = (acc[dateString] || 0) + 1;
+                }
+                return acc;
+            }, {});
+
+            const maxCompetitions = Math.max(...Object.values(competitionsByDate), 1);
+
+            // Create month labels
+            const monthLabels = document.createElement('div');
+            monthLabels.className = 'month-labels';
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            months.forEach(month => {
+                const label = document.createElement('div');
+                label.textContent = month;
+                monthLabels.appendChild(label);
+            });
+            graphContainer.appendChild(monthLabels);
+
+            // Create contribution cells
+            const cellsContainer = document.createElement('div');
+            cellsContainer.className = 'cells-container';
+            for (let month = 0; month < 12; month++) {
+                const monthContainer = document.createElement('div');
+                monthContainer.className = 'month-container';
+                const daysInMonth = new Date(selectedYear, month + 1, 0).getDate();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(selectedYear, month, day);
+                    const dateString = date.toISOString().split('T')[0];
+                    const competitions = competitionsByDate[dateString] || 0;
+                    const colorIndex = Math.min(Math.floor((competitions / maxCompetitions) * 4), 4);
+
+                    const cell = document.createElement('div');
+                    cell.className = 'contribution-cell';
+                    cell.style.backgroundColor = this.contributionColors[colorIndex];
+                    cell.title = `${dateString}: ${competitions} competition(s)`;
+                    monthContainer.appendChild(cell);
+                }
+                cellsContainer.appendChild(monthContainer);
+            }
+            graphContainer.appendChild(cellsContainer);
+
+            // Add legend
+            const legend = document.createElement('div');
+            legend.className = 'contribution-legend';
+            legend.innerHTML = `
+                <div class="legend-item">Less</div>
+                ${this.contributionColors.map(color => `
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: ${color};"></div>
+                    </div>
+                `).join('')}
+                <div class="legend-item">More</div>
+            `;
+            graphContainer.appendChild(legend);
+        };
+
+        yearDropdown.addEventListener('change', (e) => updateGraph(parseInt(e.target.value)));
+        updateGraph(currentYear);
+    }
+
+    async calculateRankings(wcaId) {
+        const resultsDiv = document.getElementById('results');
+        const continentResultsDiv = document.getElementById('asia-results');
+        const worldAveragesDiv = document.getElementById('world-averages-results');
+        const continentAveragesDiv = document.getElementById('continent-averages-results');
+        
+        // Loading state for all divs
+        const loadingHTML = `
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                Fetching data...
+            </div>`;
+        
+        resultsDiv.innerHTML = loadingHTML;
+        continentResultsDiv.innerHTML = loadingHTML;
+        worldAveragesDiv.innerHTML = loadingHTML;
+        continentAveragesDiv.innerHTML = loadingHTML;
+    
+        try {
+            // Fetch person details
+            const personResponse = await fetch(`https://www.worldcubeassociation.org/api/v0/persons/${wcaId}`);
+            if (!personResponse.ok) throw new Error('WCA ID not found. Please check and try again.');
+            
+            const personData = await personResponse.json();
+            
+            // Determine continent based on country
+            const country = personData.person.country_iso2;
+            const continent = this.getContinentForCountry(country);
+            
+            if (!continent) {
+                throw new Error(`Continent not found for country code: ${country}`);
+            }
+    
+            // Store the detected continent
+            this.selectedContinent = continent;
+    
+            // Display competitor details and singles rankings
+            this.displayResults(personData);
+            this.displayContinentResults(personData);
+    
+            // Display world and continent averages rankings
+            this.displayAveragesResults(personData, 'world');
+            this.displayAveragesResults(personData, 'continent');
+    
+            // Create charts based on singles and averages data
+            const singlesChartData = this.getChartData(personData.personal_records, this.selectedContinent);
+            const averagesChartData = this.getChartData(personData.personal_records, this.selectedContinent, 'average');
+            this.displayChart(singlesChartData);
+            this.displayAveragesChart(averagesChartData);
+    
+            // Fetch competition history and display performance history
+            const competitionHistoryResponse = await fetch(`https://www.worldcubeassociation.org/api/v0/persons/${wcaId}/competitions`);
+            if (!competitionHistoryResponse.ok) throw new Error('Failed to fetch competition history');
+            const competitionHistoryData = await competitionHistoryResponse.json();
+            this.displayPerformanceHistory(competitionHistoryData);
+
+        } catch (error) {
+            const errorHTML = `<div class="error">${error.message}</div>`;
+            resultsDiv.innerHTML = errorHTML;
+            continentResultsDiv.innerHTML = errorHTML;
+            worldAveragesDiv.innerHTML = errorHTML;
+            continentAveragesDiv.innerHTML = errorHTML;
+        }
+    }
+
     async generatePDF() {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
@@ -607,7 +725,8 @@ class WCARankingApp {
         const elements = [
             document.querySelector('.results-section'),
             document.getElementById('rankChart'),
-            document.getElementById('averagesChart')
+            document.getElementById('averagesChart'),
+            document.getElementById('contributionGraph')
         ];
 
         let yOffset = margin;

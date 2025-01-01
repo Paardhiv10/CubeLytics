@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WCA Ranking Calculator</title>
+    <link rel="stylesheet" href="../css/results-dashboard-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="header-content">
+            <div class="header-buttons">
+                <button id="downloadPdfBtn" class="pdf-download-btn">
+                    <i class="fas fa-download"></i>
+                    Download PDF
+                </button>
+                <a href="../pages/pricing.html" class="pricing-button">
+                    <i class="fas fa-crown"></i>
+                    Pro Plan
+                </a>
+                <div class="info-icon-container">
+                    <div class="info-icon">
+                        <i class="fas fa-info"></i>
+                    </div>
+                    <div class="info-card">
+                        <p>The data used for calculations is current up to 25-11-2024.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <img src="../images/tcc_logo.png" alt="The Cubing Company Logo" class="logo">
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#all" class="active">
+                            <i class="fas fa-th-large"></i>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#rankings">
+                            <i class="fas fa-trophy"></i>
+                            <span>Rankings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#graphs">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Graphs</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#performance-history">
+                            <i class="fas fa-history"></i>
+                            <span>Performance History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#recommendations">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Recommendations</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#reports">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </aside>
+
+        <main class="main-content">
+            <section class="hero">
+                <div class="card input-card">
+                    <h2>Calculate Your Rankings</h2>
+                    <div class="input-group">
+                        <input type="text" id="wcaId" placeholder="Enter your WCA ID" />
+                        <button id="calculateBtn">Calculate Rankings</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rankings" class="dashboard-section">
+                <h2>Rankings Overview</h2>
+                <!-- New Competitor Info Card -->
+                <div class="card competitor-card">
+                  <h3>Competitor Details</h3>
+                  <div id="competitor-info"></div>
+                </div>
+                <div class="card-grid">
+                  <div class="card ranking-card">
+                    <h3>
+                      <i class="fas fa-medal"></i>
+                      <span id="global-single-title">Global Rankings Single</span>
+                    </h3>
+                    <div id="results" class="results-grid"></div>
+                  </div>
+                  <div class="card ranking-card">
+                    <h3>
+                      <i class="fas fa-globe-asia"></i>
+                      <span id="continental-single-title">Continental Rankings Single</span>
+                    </h3>
+                    <div id="asia-results" class="results-grid"></div>
+                  </div>
+                  <div class="card ranking-card">
+                    <h3>
+                      <i class="fas fa-globe"></i>
+                      <span id="world-average-title">World Rankings Average</span>
+                    </h3>
+                    <div id="world-averages-results" class="results-grid"></div>
+                  </div>
+                  <div class="card ranking-card">
+                    <h3>
+                      <i class="fas fa-map"></i>
+                      <span id="continental-average-title">Continental Rankings Average</span>
+                    </h3>
+                    <div id="continent-averages-results" class="results-grid"></div>
+                  </div>
+                </div>
+            </section>
+
+            <section id="graphs" class="dashboard-section">
+                <h2>Performance Graphs</h2>
+                <div class="card chart-card">
+                    <canvas id="rankChart"></canvas>
+                </div>
+                <div class="card chart-card">
+                    <canvas id="averagesChart"></canvas>
+                </div>
+            </section>
+
+            <section id="performance-history" class="dashboard-section">
+                <h2>Performance History</h2>
+                <div class="card performance-card">
+                    <select id="yearDropdown" class="year-dropdown"></select>
+                    <div class="contribution-wrapper">
+                        <div class="contribution-header">
+                            <div class="month-labels">
+                                <span>Jan</span>
+                                <span>Feb</span>
+                                <span>Mar</span>
+                                <span>Apr</span>
+                                <span>May</span>
+                                <span>Jun</span>
+                                <span>Jul</span>
+                                <span>Aug</span>
+                                <span>Sep</span>
+                                <span>Oct</span>
+                                <span>Nov</span>
+                                <span>Dec</span>
+                            </div>
+                        </div>
+                        <div class="contribution-container">
+                            <div class="weekday-labels">
+                                <span>Mon</span>
+                                <span>Wed</span>
+                                <span>Fri</span>
+                                <span>Sun</span>
+                            </div>
+                            <div id="contributionGraph" class="contribution-graph"></div>
+                        </div>
+                        <div class="contribution-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #ebedf0;"></div>
+                                <span>No competitions</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #9be9a8;"></div>
+                                <span>1-2 competitions</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #40c463;"></div>
+                                <span>3-4 competitions</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #30a14e;"></div>
+                                <span>5+ competitions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 The Cubing Company. All Rights Reserved.</p>
+    </footer>
+
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
